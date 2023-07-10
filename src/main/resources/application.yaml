@@ -6,24 +6,15 @@ spring:
     name: API-GATEWAY
   data:
     mongodb:
-      uri: mongodb://auth-mongo-srv:27017/auth?directConnection=true
+      uri: mongodb://auth-food-mongo-srv:27017/auth?directConnection=true
   cloud:
     gateway:
       routes:
         - id: AUTH-SERVICE
-          uri: lb://AUTH-SERVICE
+          uri: http://auth-food-order-srv:8080
           predicates:
             - Path=/api/v1/auth/**
     config:
       import-check:
         enabled: false
-
-eureka:
-  instance:
-    prefer-ip-address: true
-  client:
-    fetch-registry: true
-    register-with-eureka: true
-    service-url:
-      defaultZone: ${EUREKA_SERVER_ADDRESS:http://localhost:8761/eureka}
 
