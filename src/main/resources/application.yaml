@@ -4,6 +4,9 @@ server:
 spring:
   application:
     name: API-GATEWAY
+  data:
+    mongodb:
+      uri: mongodb://auth-mongo-srv:27017/auth?directConnection=true
   cloud:
     gateway:
       routes:
