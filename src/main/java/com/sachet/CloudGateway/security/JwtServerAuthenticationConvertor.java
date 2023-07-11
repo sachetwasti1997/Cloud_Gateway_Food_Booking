@@ -17,11 +17,11 @@ import java.util.List;
 
 @Component
 public class JwtServerAuthenticationConvertor implements ServerSecurityContextRepository {
-  private final UserService userService;
   private final JwtUtil jwtUtil;
+  private final AuthenticationManager authenticationManager;
 
-  public JwtServerAuthenticationConvertor(UserService userService, JwtUtil jwtUtil) {
-    this.userService = userService;
+  public JwtServerAuthenticationConvertor(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+    this.authenticationManager = authenticationManager;
     this.jwtUtil = jwtUtil;
   }
 
@@ -36,25 +36,9 @@ public class JwtServerAuthenticationConvertor implements ServerSecurityContextRe
     return Mono.justOrEmpty(exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION))
         .filter(b -> b.startsWith(bearer))
         .map(token -> token.substring(bearer.length()))
-        .flatMap(token -> {
-          String email = jwtUtil.extractUsername(token);
-          return userService.searchUser(email)
-              .map(userDto -> {
-                List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-                userDto.getRoles().forEach(
-                    role -> authorities.add(new SimpleGrantedAuthority(role))
-                );
-                if (jwtUtil.validateToken(token, userDto)) {
-                  return new UsernamePasswordAuthenticationToken(
-                      userDto.getEmail(),
-                      token,
-                      authorities
-                  );
-                } else {
-                  return null;
-                }
-              });
-        })
-        .map(SecurityContextImpl::new);
+        .map(token -> new UsernamePasswordAuthenticationToken(token, token))
+        .flatMap(auth ->
+            authenticationManager.authenticate(auth).map(SecurityContextImpl::new)
+        );
   }
 }

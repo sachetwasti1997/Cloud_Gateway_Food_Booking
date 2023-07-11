@@ -1,9 +1,10 @@
 package com.sachet.CloudGateway.security;
 
-import com.sachet.CloudGateway.dto.UserDto;
+import com.sachet.CloudGateway.dto.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -12,8 +13,8 @@ import java.util.function.Function;
 
 @Service
 public class JwtUtil {
-
-    private final String SECRET_KEY = "#wed$443@3hg";
+    @Value("${secure_key}")
+    private String SECRET_KEY ;
 
     public String extractUsername(String token){
         return extractClaim(token, Claims::getSubject);
@@ -28,7 +29,7 @@ public class JwtUtil {
         return claimsResolver.apply(claims);
     }
 
-    private Claims extractAllClaims(String token){
+    public Claims extractAllClaims(String token){
         SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
         return Jwts.parserBuilder()
                 .setSigningKey(key)
@@ -41,7 +42,7 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    public Boolean validateToken(String token, UserDto userModel){
+    public Boolean validateToken(String token, User userModel){
         final String username = extractUsername(token);
         return (username.equals(userModel.getEmail()) && !isTokenExpired(token));
     }

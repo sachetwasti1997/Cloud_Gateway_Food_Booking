@@ -5,22 +5,33 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
-public class UserDto {
+@Document
+public class User {
+
+    @Id
+    private String id;
     private String name;
     private String userName;
     private String email;
     private String password;
     List<String> roles;
 
-    public UserDto() {
+    public User() {
     }
 
-    public UserDto(String name, String userName, String email, String password, List<String> roles) {
+    public User(String name, String userName, String email, String password, List<String> roles) {
         this.name = name;
         this.userName = userName;
         this.email = email;
         this.password = password;
         this.roles = roles;
+    }
+
+    public User(String name, String userName, String email, String password) {
+        this.name = name;
+        this.userName = userName;
+        this.email = email;
+        this.password = password;
     }
 
     public String getName() {
@@ -61,5 +72,16 @@ public class UserDto {
 
     public void setRoles(List<String> roles) {
         this.roles = roles;
+    }
+
+    @Override
+    public String toString() {
+        return "UserDto{" +
+            "name='" + name + '\'' +
+            ", userName='" + userName + '\'' +
+            ", email='" + email + '\'' +
+            ", password='" + password + '\'' +
+            ", roles=" + roles +
+            '}';
     }
 }

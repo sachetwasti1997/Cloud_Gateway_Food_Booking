@@ -6,15 +6,17 @@ spring:
     name: API-GATEWAY
   data:
     mongodb:
-      uri: mongodb://auth-food-mongo-srv:27017/auth?directConnection=true
+      uri: ${AUTH_MONGO_URL:mongodb://localhost:27017/auth}
   cloud:
     gateway:
       routes:
         - id: AUTH-SERVICE
-          uri: http://auth-food-order-srv:8080
+          uri: ${AUTH_URL:http://localhost:8080}
           predicates:
             - Path=/api/v1/auth/**
     config:
       import-check:
         enabled: false
+
+secure_key: SECURE_KEY
 

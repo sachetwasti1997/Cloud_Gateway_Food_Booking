@@ -13,22 +13,25 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 public class SecurityConfig {
 
   private final JwtServerAuthenticationConvertor convertor;
+  private final AuthenticationManager authenticationManager;
 
-  public SecurityConfig(JwtServerAuthenticationConvertor convertor) {
+  public SecurityConfig(JwtServerAuthenticationConvertor convertor, AuthenticationManager authenticationManager) {
     this.convertor = convertor;
+    this.authenticationManager = authenticationManager;
   }
 
   @Bean
   public SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http) {
     http
         .authorizeExchange(auth -> {
-          auth.pathMatchers("/api/v1/auth/login").permitAll();
-          auth.pathMatchers("/api/v1/auth/signup").permitAll();
-          auth.anyExchange().authenticated();
+          auth.pathMatchers("/api/v1/auth/login").permitAll()
+              .pathMatchers("/api/v1/auth/signup").permitAll()
+              .anyExchange().authenticated();
         })
         .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
         .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
         .csrf(ServerHttpSecurity.CsrfSpec::disable)
+        .authenticationManager(authenticationManager)
         .securityContextRepository(convertor);
     return http.build();
   }

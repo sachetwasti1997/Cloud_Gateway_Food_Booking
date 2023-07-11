@@ -1,19 +1,13 @@
 package com.sachet.CloudGateway.UserRepository;
 
-import com.sachet.CloudGateway.dto.UserDto;
-import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import com.sachet.CloudGateway.dto.User;
+import org.springframework.data.mongodb.repository.Query;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;
 
 @Repository
-public class UserRepository {
-    private final ReactiveMongoTemplate template;
-    public UserRepository(ReactiveMongoTemplate template) {
-        this.template = template;
-    }
-    public Mono<UserDto> find(Query query) {
-        return template.find(query, UserDto.class).elementAt(0);
-    }
+public interface UserRepository extends ReactiveMongoRepository<User, String> {
+    @Query("{'email' : ?0}")
+    Mono<User> findByEmail(String email);
 }
