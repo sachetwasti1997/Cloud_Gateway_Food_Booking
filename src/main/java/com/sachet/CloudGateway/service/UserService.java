@@ -15,7 +15,6 @@ public class UserService {
     }
 
     public Mono<User> searchUser(String email) {
-      System.out.println("Method called with "+email);
       return userRepository.findByEmail(email);
     }
 }

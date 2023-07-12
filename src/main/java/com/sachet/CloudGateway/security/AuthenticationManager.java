@@ -27,7 +27,6 @@ public class AuthenticationManager implements ReactiveAuthenticationManager {
   public Mono<Authentication> authenticate(Authentication authentication) {
     String token = authentication.getCredentials().toString();
     String email = jwtUtil.extractUsername(token);
-    System.out.println(jwtUtil.extractAllClaims(token));
     return userService.searchUser(email)
         .flatMap(userDto -> {
           if (jwtUtil.validateToken(token, userDto)) {
