@@ -18,6 +18,10 @@ spring:
           uri: ${MENU_URL:http://localhost:8081}
           predicates:
             - Path=/api/v1/menu/**
+        - id: ORDER-SERVICE
+          uri: http://ordersrv:8072
+          predicates:
+            - Path=/api/v1/order/**
     config:
       import-check:
         enabled: false
