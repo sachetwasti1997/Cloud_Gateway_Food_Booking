@@ -22,6 +22,10 @@ spring:
           uri: "http://ordersrv:8072"
           predicates:
             - Path=/api/v1/order/**
+        - id: PAYMENT-SERVICE
+          uri: "http://paymentsrv:8052"
+          predicates:
+            - Path=/api/v1/payment/**
     config:
       import-check:
         enabled: false
